@@ -1,4 +1,8 @@
 
+To install all the requirements to run that project just run:
+    > pip install -r requirements.txt
+
+
 What we have here:
 
     templates folder: you find the html code for the to pages
