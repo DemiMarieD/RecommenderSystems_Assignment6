@@ -26,4 +26,7 @@ def recommendation_view(request, id):
     # If you are using DataFrames keep in mind that Django needs a dictionary as the context  variable. 
     # So use the to_dict() function to convert it.
     recommendation_dict = recommendations(id).to_dict()
+    print(recommendation_dict)
+    # Currently only a dataframe with UserID, MovieID and Rating is returned
+    #   TODO: Enrich this data
     return render(request, "recommendations.html", recommendation_dict)

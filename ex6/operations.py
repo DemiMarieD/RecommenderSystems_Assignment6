@@ -1,6 +1,7 @@
-
+import numpy as np
+import pycmf
 import pandas as pd
-
+from sklearn.neighbors import KNeighborsClassifier
 
 # ******* GLOBAL PARAMETERS *********** #
 neighbor_size = 5
@@ -14,13 +15,34 @@ users = pd.read_table("ex6/Data/ml-1m/users.dat", "::", engine="python",
 
 # merge all to one -> then make sample and use only this table
 data_right = pd.merge(ratings, movies, on='MovieID')
-data = pd.merge(users, data_right, on='UserID').sample(50000)  # todo adjust sample size
+data = pd.merge(users, data_right, on='UserID')#.sample(50000)  # todo adjust sample size
 data = data[['UserID', 'MovieID', 'Title', 'Rating', 'Genres']]
-print(data.head(10))  # to see the user IDs i could try
+#print(data.head(10))  # to see the user IDs i could try
 data_grouped_byUser = data.groupby("UserID")
 user_list = list(data["UserID"].unique())
 movie_list = list(data["MovieID"].unique())
 
+# Prepare training and test sets
+data_copy = data.copy()
+# 80% for training
+# TODO: Is it necessary to split it here for our purpose?
+#   We do not want to evaluate the prediction
+train = data_copy.sample(frac=0.8)
+test = data_copy.drop(train.index)
+#print(train.describe())
+#print(test.describe())
+# Use UserIDs and MovieIDs as Features, Ratings as Classification
+x_train = train[['UserID', 'MovieID']]
+y_train = train[['Rating']]
+x_test = test[['UserID', 'MovieID']]
+y_test = test[['Rating']]
+
+knn = KNeighborsClassifier()
+knn.fit(x_train, y_train)
+KNeighborsClassifier(n_neighbors=neighbor_size)
+# Can be used to check the predictions
+# print(knn.predict(x_test.head(10)))
+# print(y_test.head(10))
 
 def checkUserId(userId):
     if int(userId) in user_list:
@@ -31,9 +53,36 @@ def checkUserId(userId):
 
 def recommendations(userID):
     # todo calculate top 20 recommendations for user
+    # Use the UserId and all movies he has not rated as input
+    userData = data_grouped_byUser.get_group(userID)
+    ratedMoviesByUser = set(userData["MovieID"])
+    # Retrieve all movies the user has not rated
+    unratedMoviesByUser = set(movie_list) - ratedMoviesByUser
 
+    # Input data will have the form [['UserID', 'MovieID'], ['UserID', 'MovieID'], ...]
+    inputData = []
+    for unratedMovie in unratedMoviesByUser:
+        inputData.append([userID, unratedMovie])
+    # Convert to DataFrame
+    userMovieDf = pd.DataFrame(inputData, columns=['UserID', 'MovieID'])
+
+    # TODO: Even if unrealistic, add check if the input is empty
+
+    # Predict and append ratings to the input DataFrame. Now it has the form:
+    # [['UserID', 'MovieID', 'Rating'], ['UserID', 'MovieID', 'Rating'], ...]
+    # where 'Rating' is the predicted rating
+    userMovieDf['Rating'] = knn.predict(userMovieDf)
+    print(userMovieDf)
+
+    sortedPredictions = userMovieDf.sort_values(by=['Rating'], ascending=False)
+
+    # Take the top‐20 list of the ranked list
+    if len(sortedPredictions) > 20:
+        top_20_predictions = sortedPredictions[:20]
+    else:
+        top_20_predictions = sortedPredictions
+    print(top_20_predictions)
+    return top_20_predictions
     # The recommendations can be computed with your nearest‐neighbor algorithm or 
     # using some existing library that, e.g., implements a matrix factorization approach. 
     # For this  have a look at https://mc.ai/overview‐of‐matrix‐factorisation‐techniques‐using‐python‐2/ 
-
-    pass
