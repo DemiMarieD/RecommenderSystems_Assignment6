@@ -113,6 +113,6 @@ def enrichWithMetaData(top_20_predictions):
         synopsys = metadataForMovie["overview"]
         releaseDate = metadataForMovie["release_date"]
         # Add metadata to result dictionary, use movieId as key
-        resultDict[movieId] = {"genres": genresList, "title": title, "posterPath": posterPath, "sysopsis": synopsys, "releaseDate": releaseDate}
+        resultDict[movieId] = {"genres": genresList, "title": title, "posterPath": posterPath, "synopsis": synopsys, "releaseDate": releaseDate}
 
     return resultDict

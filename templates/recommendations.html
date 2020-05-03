@@ -7,8 +7,21 @@
 <body>
 <h1>Recommendations:</h1>
 {% for movieId, details in recommendations %}
-    <h2>MovieID {{ movieId }}:</h2>
-    <p>{{ details }}</p>
+    <h2>{{ details.title }}</h2>
+    <p>
+        <span>Released: {{ details.releaseDate }}</span>
+        <h3>Genre:</h3>
+        <ul>
+            {% for genre in details.genres %}
+                <li>{{genre}}</li>
+            {% endfor %}
+        </ul>
+        <h3>Synopsis:</h3>
+        <p>
+            {{ details.synopsis }}
+        </p>
+    </p>
+
 {% endfor %}
 </body>
 </html>
