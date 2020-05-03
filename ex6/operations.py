@@ -2,10 +2,13 @@ import numpy as np
 import pycmf
 import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
+from ast import literal_eval
 
 # ******* GLOBAL PARAMETERS *********** #
 neighbor_size = 5
 top_n = 10
+
+metadata = pd.read_csv(filepath_or_buffer="ex6/Data/movies_metadata.csv", delimiter=",")
 
 movies = pd.read_table("ex6/Data/ml-1m/movies.dat", "::", engine="python", names=['MovieID', 'Title', 'Genres'])
 ratings = pd.read_table("ex6/Data/ml-1m/ratings.dat", "::", engine="python",
@@ -15,9 +18,9 @@ users = pd.read_table("ex6/Data/ml-1m/users.dat", "::", engine="python",
 
 # merge all to one -> then make sample and use only this table
 data_right = pd.merge(ratings, movies, on='MovieID')
-data = pd.merge(users, data_right, on='UserID')#.sample(50000)  # todo adjust sample size
+data = pd.merge(users, data_right, on='UserID')  # .sample(50000)  # todo adjust sample size
 data = data[['UserID', 'MovieID', 'Title', 'Rating', 'Genres']]
-#print(data.head(10))  # to see the user IDs i could try
+# print(data.head(10))  # to see the user IDs i could try
 data_grouped_byUser = data.groupby("UserID")
 user_list = list(data["UserID"].unique())
 movie_list = list(data["MovieID"].unique())
@@ -29,8 +32,8 @@ data_copy = data.copy()
 #   We do not want to evaluate the prediction
 train = data_copy.sample(frac=0.8)
 test = data_copy.drop(train.index)
-#print(train.describe())
-#print(test.describe())
+# print(train.describe())
+# print(test.describe())
 # Use UserIDs and MovieIDs as Features, Ratings as Classification
 x_train = train[['UserID', 'MovieID']]
 y_train = train[['Rating']]
@@ -40,6 +43,8 @@ y_test = test[['Rating']]
 knn = KNeighborsClassifier()
 knn.fit(x_train, y_train)
 KNeighborsClassifier(n_neighbors=neighbor_size)
+
+
 # Can be used to check the predictions
 # print(knn.predict(x_test.head(10)))
 # print(y_test.head(10))
@@ -86,3 +91,28 @@ def recommendations(userID):
     # The recommendations can be computed with your nearest‐neighbor algorithm or 
     # using some existing library that, e.g., implements a matrix factorization approach. 
     # For this  have a look at https://mc.ai/overview‐of‐matrix‐factorisation‐techniques‐using‐python‐2/ 
+
+
+# Expects the DataFrame with predictions as input
+# Form: [['UserID', 'MovieID', 'Rating'], ['UserID', 'MovieID', 'Rating'], ...]
+# Returns a dictionary with needed metadata
+def enrichWithMetaData(top_20_predictions):
+    resultDict = {}
+    for index, row in top_20_predictions.iterrows():
+        movieId = row["MovieID"]
+        metadataForMovie = metadata.iloc[index]
+        # Extract the needed metadata
+        # TODO: Add more if necessary
+        # literal_eval()  is necessary to interprete the list as list. In the CSV everything is a string
+        genres = literal_eval(metadataForMovie["genres"])
+        genresList = list()
+        for genre in genres:
+            genresList.append(genre["name"])
+        title = metadataForMovie["title"]
+        posterPath = metadataForMovie["poster_path"]
+        synopsys = metadataForMovie["overview"]
+        releaseDate = metadataForMovie["release_date"]
+        # Add metadata to result dictionary, use movieId as key
+        resultDict[movieId] = {"genres": genresList, "title": title, "posterPath": posterPath, "sysopsis": synopsys, "releaseDate": releaseDate}
+
+    return resultDict

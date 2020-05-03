@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from ex6.forms import user_id_form
 from ex6.operations import recommendations
+from ex6.operations import enrichWithMetaData
 
 
 def welcome_view(request):
@@ -25,8 +26,12 @@ def recommendation_view(request, id):
     # todo create/calc recommendations
     # If you are using DataFrames keep in mind that Django needs a dictionary as the context  variable. 
     # So use the to_dict() function to convert it.
-    recommendation_dict = recommendations(id).to_dict()
+    recommendations_df = recommendations(id)
+    recommendation_dict = enrichWithMetaData(recommendations_df)
     print(recommendation_dict)
-    # Currently only a dataframe with UserID, MovieID and Rating is returned
-    #   TODO: Enrich this data
+    # The dictionary contains entries with movie ids as keys
+    # e.g. 1947: {'genres': ['Drama', 'Comedy'], 'title': 'My Life in Pink', 'posterPath': '/f5bySDXIX09A3tbtTYHbXK1V0Nf.jpg',
+    # 'sysopsis': "Ludovic is a small boy who cross-dresses and generally acts like a girl, talks of marrying his neighbor's son
+    # and can not understand why everyone is so surprised about it. His actions lead to problems for him and his family.",
+    # 'releaseDate': '1956-07-14'}
     return render(request, "recommendations.html", recommendation_dict)
