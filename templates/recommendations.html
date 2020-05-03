@@ -5,13 +5,10 @@
     <title>Recommdenations</title>
 </head>
 <body>
-
-{% for movie,details in recommendation_dict %}
-    <p>{{ key }}:</p>
-    {% for key, value in details %}
-
-    {% endfor %}
+<h1>Recommendations:</h1>
+{% for movieId, details in recommendations %}
+    <h2>MovieID {{ movieId }}:</h2>
+    <p>{{ details }}</p>
 {% endfor %}
-
 </body>
 </html>

@@ -34,4 +34,5 @@ def recommendation_view(request, id):
     # 'sysopsis': "Ludovic is a small boy who cross-dresses and generally acts like a girl, talks of marrying his neighbor's son
     # and can not understand why everyone is so surprised about it. His actions lead to problems for him and his family.",
     # 'releaseDate': '1956-07-14'}
-    return render(request, "recommendations.html", recommendation_dict)
+    context = {"recommendations": recommendation_dict.items()}
+    return render(request, "recommendations.html", context)
