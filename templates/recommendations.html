@@ -8,7 +8,7 @@
 <h1>Recommendations:</h1>
 {% for movieId, details in recommendations %}
     <h2>{{ details.title }}</h2>
-    <img src="{{ details.posterPath }}" alt="{{ details.title }}details.title">
+    <img src="{{ details.posterPath }}" alt="Poster not available">
     <p>
         <span>Released: {{ details.releaseDate }}</span>
         <h3>Genre:</h3>
@@ -21,6 +21,12 @@
         <p>
             {{ details.synopsis }}
         </p>
+        <h3>Actors:</h3>
+        <ul>
+            {% for actor in details.actors %}
+                <li>{{actor}}</li>
+            {% endfor %}
+        </ul>
     </p>
 
 {% endfor %}

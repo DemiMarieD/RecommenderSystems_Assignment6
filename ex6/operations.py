@@ -122,8 +122,13 @@ def enrichWithMetaData(top_20_predictions):
         posterPath = ""
         if tmdbMovie.poster_path != None:
             posterPath = "https://image.tmdb.org/t/p/w342" + tmdbMovie.poster_path
+        # Get actors for movie (cast)
+        tmdbMovie.credits()
+        movieCast = list()
+        for castMember in tmdbMovie.cast:
+            movieCast.append(castMember["name"])
 
         # Add metadata to result dictionary, use movieId as key
-        resultDict[movieId] = {"genres": genresList, "title": title, "posterPath": posterPath, "synopsis": synopsys, "releaseDate": releaseDate}
+        resultDict[movieId] = {"genres": genresList, "title": title, "posterPath": posterPath, "synopsis": synopsys, "releaseDate": releaseDate, "actors": movieCast}
 
     return resultDict
