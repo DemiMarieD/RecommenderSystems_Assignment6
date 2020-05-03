@@ -8,6 +8,7 @@
 <h1>Recommendations:</h1>
 {% for movieId, details in recommendations %}
     <h2>{{ details.title }}</h2>
+    <img src="{{ details.posterPath }}" alt="{{ details.title }}details.title">
     <p>
         <span>Released: {{ details.releaseDate }}</span>
         <h3>Genre:</h3>

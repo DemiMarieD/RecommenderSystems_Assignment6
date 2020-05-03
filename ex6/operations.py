@@ -3,10 +3,13 @@ import pycmf
 import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
 from ast import literal_eval
+import tmdbsimple as tmdb
 
 # ******* GLOBAL PARAMETERS *********** #
 neighbor_size = 5
 top_n = 10
+
+tmdb.API_KEY = '1fe2d017037a1445b9122ea2dcd42d41'
 
 metadata = pd.read_csv(filepath_or_buffer="ex6/Data/movies_metadata.csv", delimiter=",")
 
@@ -109,9 +112,17 @@ def enrichWithMetaData(top_20_predictions):
         for genre in genres:
             genresList.append(genre["name"])
         title = metadataForMovie["title"]
-        posterPath = metadataForMovie["poster_path"]
         synopsys = metadataForMovie["overview"]
         releaseDate = metadataForMovie["release_date"]
+        # retrieve the poster path from tmdb api
+        tmdbMovie = tmdb.Movies(metadataForMovie["imdb_id"])
+        tmdbMovie.info()
+        # TODO: This could be changed to retrieve the path via API
+        # TODO: Adapt size if necessary
+        posterPath = ""
+        if tmdbMovie.poster_path != None:
+            posterPath = "https://image.tmdb.org/t/p/w342" + tmdbMovie.poster_path
+
         # Add metadata to result dictionary, use movieId as key
         resultDict[movieId] = {"genres": genresList, "title": title, "posterPath": posterPath, "synopsis": synopsys, "releaseDate": releaseDate}
 
