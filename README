@@ -8,7 +8,7 @@ Please make sure to follow the following steps:
     > pip install -r requirements.txt
 
 2. Run the project:
-    PycharmProjects\ex6>  python manage.py runserver 8080
+    > python manage.py runserver 8080
         You should see now:
         Watching for file changes with StatReloader
         Performing system checks...
