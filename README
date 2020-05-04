@@ -1,20 +1,7 @@
+Recommender Systems
+Assignment 6 - Group 1: Demi Dauerer, Eda Muka and Sebastian Lubos 
+
 
 To install all the requirements to run that project just run:
     > pip install -r requirements.txt
 
-
-What we have here:
-
-    templates folder: you find the html code for the to pages
-
-    ex6 folder:
-        > forms is used to define the input form for the User ID
-        > operations here are the logic / calculations / the connection to the data
-        > urls here the url of the two pages is def. so to call the first page use /welcome
-        > views here we render the html pages accordingly
-
-        > the other files were not touched by me.
-
-REMARK: I'm not sure if this is the right/best structuring so you may restructure if you know better.
-
-TODO: We still need to implement making the recommendations. + We need to make it look much nicer!
