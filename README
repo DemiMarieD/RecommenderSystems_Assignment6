@@ -1,7 +1,16 @@
 Recommender Systems
 Assignment 6 - Group 1: Demi Dauerer, Eda Muka and Sebastian Lubos 
 
+Please make sure to follow the following steps:
 
-To install all the requirements to run that project just run:
+1. Install all the requirements to run that project:
     > pip install -r requirements.txt
 
+2. Run the project:
+    PycharmProjects\ex6>  python manage.py runserver 8080
+        You should see now:
+        Watching for file changes with StatReloader
+        Performing system checks...
+
+I build a redirect so localhost:8080/ redirects to http://localhost:8080/welcome/ automatically
+If it is still not working maybe also try a different port (than 8080) in case this port is not available.

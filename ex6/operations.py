@@ -1,5 +1,4 @@
 import numpy as np
-import pycmf
 import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
 from ast import literal_eval

@@ -4,6 +4,8 @@ from ex6.forms import user_id_form
 from ex6.operations import recommendations
 from ex6.operations import enrichWithMetaData
 
+def index(request):
+    return redirect('/welcome')
 
 def welcome_view(request):
     # create a form instance and populate it with data from the request:
